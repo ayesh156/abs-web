@@ -173,7 +173,6 @@ export default function BlogPage() {
                 sm:grid-cols-2 sm:gap-8 
                 lg:grid-cols-3 
                 xl:gap-10
-                2xl:grid-cols-4
                 transition-all duration-500 
                 ${isLoading ? 'opacity-50 scale-[0.98]' : 'opacity-100 scale-100'}
               `}>
