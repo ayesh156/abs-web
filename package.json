@@ -10,14 +10,18 @@
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "set-admin": "node scripts/set-admin-claims.js",
+    "setup-admin": "node scripts/setup-admin.js"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "framer-motion": "^12.23.9",
+    "firebase": "^12.2.1",
+    "firebase-admin": "^13.5.0",
+    "framer-motion": "^12.23.12",
     "lucide-react": "^0.525.0",
     "next": "^15.5.2",
     "next-seo": "^6.8.0",
