@@ -6,7 +6,13 @@ const nextConfig: NextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+   typescript: {
+    // Temporarily ignore TypeScript errors during build
+    ignoreBuildErrors: false,
+  },
   images: {
+     domains: ['firebasestorage.googleapis.com'],
+    formats: ['image/webp', 'image/avif'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -33,6 +39,16 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  experimental: {
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
   },
 };
 
