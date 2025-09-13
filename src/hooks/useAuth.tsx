@@ -3,6 +3,12 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User } from 'firebase/auth';
 import { signIn, signOut, onAuthStateChange, getCurrentUserToken } from '@/lib/auth';
+import { 
+  isAuthBypassEnabled, 
+  createMockAdminUser, 
+  setBypassAuthCookie,
+  getBypassWarning 
+} from '@/lib/auth-bypass';
 
 // Enhanced user interface with Firestore data
 interface EnhancedUser extends User {
@@ -22,6 +28,8 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   clearError: () => void;
   getAuthStatus: () => Promise<{ authenticated: boolean; user?: EnhancedUser | null; isAdmin?: boolean }>;
+  bypassMode: boolean;
+  bypassWarning: ReturnType<typeof getBypassWarning>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +39,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [bypassMode, setBypassMode] = useState(false);
+
+  // Check for bypass mode
+  const bypassEnabled = isAuthBypassEnabled();
+  const bypassWarning = getBypassWarning();
 
   useEffect(() => {
     let isMounted = true;
@@ -38,6 +51,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     const initializeAuth = async () => {
       try {
+        // Check for bypass mode first
+        if (bypassEnabled) {
+          console.warn('AUTHENTICATION BYPASS ACTIVE - Development mode only!');
+          
+          if (isMounted) {
+            const mockUser = createMockAdminUser();
+            const enhancedUser: EnhancedUser = {
+              uid: mockUser.uid,
+              email: mockUser.email,
+              displayName: mockUser.displayName,
+              photoURL: mockUser.photoURL,
+              phoneNumber: mockUser.phoneNumber,
+              emailVerified: mockUser.emailVerified,
+              name: mockUser.name,
+              role: mockUser.role,
+              isAdmin: mockUser.isAdmin,
+              lastLogin: new Date(),
+              createdAt: new Date(),
+              // Mock required Firebase User methods/properties
+              getIdToken: async () => 'bypass-token',
+              getIdTokenResult: async () => ({}) as import('firebase/auth').IdTokenResult,
+              delete: async () => {},
+              reload: async () => {},
+              toJSON: () => ({}),
+              isAnonymous: false,
+              metadata: {} as import('firebase/auth').UserMetadata,
+              providerData: [],
+              providerId: 'firebase',
+              refreshToken: '',
+              tenantId: null,
+            };
+            
+            setUser(enhancedUser);
+            setIsAdmin(true);
+            setBypassMode(true);
+            setLoading(false);
+            
+            // Set bypass cookie for API routes
+            setBypassAuthCookie();
+          }
+          return;
+        }
+
+        // Normal authentication flow
+        setBypassMode(false);
         // First check if we have admin auth cookie
         const hasAdminAuth = document.cookie.includes('admin-auth=true');
         
@@ -175,6 +233,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const handleSignIn = async (email: string, password: string) => {
+    // If bypass mode is enabled, automatically "sign in" the mock user
+    if (bypassEnabled) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -272,6 +336,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signOut: handleSignOut,
     clearError,
     getAuthStatus,
+    bypassMode,
+    bypassWarning,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

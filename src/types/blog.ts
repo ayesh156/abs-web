@@ -5,30 +5,24 @@ export interface BlogPost {
   excerpt: string;
   content: string;
   category: BlogCategory;
-  author: Author;
+  author: {
+    name: string;
+    role: string;
+    position?: string;  // Optional professional position/title
+    avatar: string;
+    authorImage?: string;  // Optional high-quality author profile image
+    bio?: string;
+  };
   publishedAt: string;
   updatedAt?: string;
   readTime: string;
   featuredImage: string;
   isFeatured: boolean;
   isPublished: boolean;
-  seo: {
+  seo?: {
     metaTitle?: string;
     metaDescription?: string;
     canonicalUrl?: string;
-  };
-}
-
-export interface Author {
-  id: string;
-  name: string;
-  bio: string;
-  avatar: string;
-  role: string;
-  socialLinks: {
-    twitter?: string;
-    linkedin?: string;
-    github?: string;
   };
 }
 
