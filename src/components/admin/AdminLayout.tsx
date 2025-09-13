@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
+import AuthBypassWarning from '@/components/auth/AuthBypassWarning';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-black">
+      {/* Auth Bypass Warning - Commented out for cleaner development experience */}
+      {/* <AuthBypassWarning variant="fixed" /> */}
+      
       {/* Sidebar */}
       <AdminSidebar 
         isOpen={sidebarOpen} 

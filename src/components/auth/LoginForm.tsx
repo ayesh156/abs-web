@@ -263,9 +263,15 @@ export default function LoginForm({ onSubmit, isLoading = false }: LoginFormProp
           transition={{ delay: 0.8, duration: 0.4 }}
           className="text-center"
         >
-          <p className="text-white/50 text-xs leading-relaxed">
-            🔒 Firebase Authentication • Admin-only access<br />
-            Protected by enterprise-grade security
+          <p className="text-white/50 text-xs leading-relaxed flex flex-col items-center gap-1">
+            <span className="flex items-center gap-2">
+              <Lock className="w-3 h-3" />
+              Firebase Authentication • Admin-only access
+            </span>
+            <span className="flex items-center gap-2">
+              <Shield className="w-3 h-3" />
+              Protected by enterprise-grade security
+            </span>
           </p>
         </motion.div>
       </motion.form>

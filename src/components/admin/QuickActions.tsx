@@ -44,26 +44,7 @@ export default function QuickActions() {
 
   return (
     <div className="relative">
-      {/* Primary Action Button */}
-      <div className="flex items-center">
-        <Button
-          variant="primary"
-          className="rounded-r-none border-r border-accent-green/30"
-          onClick={() => window.location.href = '/admin/blog/new'}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          New Post
-        </Button>
-        
-        <Button
-          variant="primary"
-          className="rounded-l-none px-3"
-          onClick={() => setShowDropdown(!showDropdown)}
-        >
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-      </div>
-
+ 
       {/* Dropdown Menu */}
       {showDropdown && (
         <div className="absolute right-0 mt-2 w-64 bg-black/95 backdrop-blur-sm border border-white/20 rounded-lg shadow-xl overflow-hidden z-50">

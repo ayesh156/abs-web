@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import PostCard from '@/components/post/PostCard';
+import { BlogPostCard } from '@/components/blog';
 import AuthorProfile from '@/components/post/AuthorProfile';
 import NewsletterSignup from '@/components/post/NewsletterSignup';
 import { Button } from '@/components/ui/Button';
@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getRelatedPosts, BLOG_POSTS } from '@/data/blog';
+import { BlogService } from '@/lib/blog-service';
 import type { BlogPost } from '@/types/blog';
 
 interface BlogPostClientProps {
@@ -27,13 +27,55 @@ interface BlogPostClientProps {
 }
 
 export default function BlogPostClient({ post }: BlogPostClientProps) {
-  const [copySuccess, setCopySuccess] = React.useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [previousPost, setPreviousPost] = useState<BlogPost | null>(null);
+  const [nextPost, setNextPost] = useState<BlogPost | null>(null);
   const pathname = usePathname();
-  
-  const relatedPosts = getRelatedPosts(post, 3);
-  const currentIndex = BLOG_POSTS.findIndex(p => p.slug === post.slug);
-  const previousPost = currentIndex > 0 ? BLOG_POSTS[currentIndex - 1] : null;
-  const nextPost = currentIndex < BLOG_POSTS.length - 1 ? BLOG_POSTS[currentIndex + 1] : null;
+
+  // Load related posts and navigation posts from Firebase
+  useEffect(() => {
+    const loadRelatedData = async () => {
+      try {
+        // Get all published posts from Firebase
+        const allPosts = await BlogService.getPosts({ 
+          published: true, 
+          limitCount: 100,
+          useFallback: false 
+        });
+
+        if (allPosts.length > 0) {
+          // Get related posts from the same category, excluding current post
+          const related = allPosts
+            .filter(p => p.id !== post.id && p.category.id === post.category.id)
+            .slice(0, 3);
+          
+          setRelatedPosts(related);
+
+          // Find previous and next posts based on published date
+          const sortedPosts = allPosts.sort((a, b) => 
+            new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+          );
+          
+          const currentIndex = sortedPosts.findIndex(p => p.slug === post.slug);
+          if (currentIndex > 0) {
+            setPreviousPost(sortedPosts[currentIndex - 1]);
+          }
+          if (currentIndex < sortedPosts.length - 1) {
+            setNextPost(sortedPosts[currentIndex + 1]);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading related posts from Firebase:', error);
+        // Set empty arrays on error since we're not using fallback data
+        setRelatedPosts([]);
+        setPreviousPost(null);
+        setNextPost(null);
+      }
+    };
+
+    loadRelatedData();
+  }, [post]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -138,7 +180,6 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
             <AuthorProfile
               author={post.author}
               variant="default"
-              showSocial={true}
               showBio={true}
             />
           </div>
@@ -233,7 +274,6 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
           <AuthorProfile
             author={post.author}
             variant="detailed"
-            showSocial={true}
             showBio={true}
           />
         </div>
@@ -298,7 +338,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                   className="scroll-reveal"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <PostCard
+                  <BlogPostCard
                     post={relatedPost}
                     variant="default"
                     showAuthor={true}

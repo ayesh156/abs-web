@@ -3,10 +3,10 @@
 import { BlogPost } from '@/types/blog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { ArrowRight, Calendar, Clock } from 'lucide-react';
+import ImageWithFallback from '@/components/ui/ImageWithFallback';
+import { ArrowRight, Clock, User } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { cn, getContentPreview } from '@/lib/utils';
 
 interface BlogPostCardProps {
   post: BlogPost;
@@ -15,6 +15,50 @@ interface BlogPostCardProps {
   showCategory?: boolean;
   className?: string;
 }
+
+// Enhanced Author Avatar component with better accessibility
+interface AuthorAvatarProps {
+  author: BlogPost['author'];
+  size?: 'sm' | 'md' | 'lg';
+  showName?: boolean;
+  className?: string;
+}
+
+const AuthorAvatar = ({ author, size = 'md', showName = false, className }: AuthorAvatarProps) => {
+  const sizeMap = {
+    sm: { width: 24, height: 24, textSize: 'text-xs' },
+    md: { width: 32, height: 32, textSize: 'text-sm' },
+    lg: { width: 48, height: 48, textSize: 'text-base' }
+  };
+
+  const { width, height, textSize } = sizeMap[size];
+  
+  // Generate fallback avatar URL with better quality
+  const fallbackSrc = `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name)}&background=25306c&color=ffffff&size=${width * 2}&format=png&rounded=true&bold=true`;
+
+  return (
+    <div className={cn('flex items-center gap-2', className)}>
+      <div className="relative rounded-full overflow-hidden bg-white/10 ring-2 ring-white/10">
+        <ImageWithFallback
+          src={author.authorImage || author.avatar}
+          alt={`${author.name} - ${author.role}`}
+          width={width}
+          height={height}
+          className="object-cover"
+          fallbackSrc={fallbackSrc}
+          quality={90}
+          aspectRatio="square"
+        />
+      </div>
+      {showName && (
+        <div className="min-w-0 flex-1">
+          <p className={cn('font-medium text-white truncate', textSize)}>{author.name}</p>
+          <p className="text-xs text-white/60 truncate">{author.role}</p>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function BlogPostCard({
   post,
@@ -31,85 +75,85 @@ export default function BlogPostCard({
     });
   };
 
+  // High-quality fallback images
+  const defaultFeaturedImage = 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800';
+  const fallbackFeaturedImage = 'https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800';
+
   if (variant === 'featured') {
     return (
       <Card className={cn(
-        'group relative overflow-hidden border-accent-green/20 bg-gradient-to-br from-white/8 via-white/4 to-white/2',
+        'group overflow-hidden border-white/10 bg-white/5 hover:border-accent-green/30 transition-all duration-300',
         className
       )}>
-        <div className="grid grid-cols-1 gap-0 lg:grid-cols-2">
-          {/* Image Section */}
-          <div className="relative h-64 sm:h-72 lg:h-auto overflow-hidden">
-            <Image
-              src={post.featuredImage}
-              alt={post.title}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+          {/* Enhanced Featured Image Section */}
+          <div className="relative h-64 lg:h-auto overflow-hidden">
+            <ImageWithFallback
+              src={post.featuredImage || defaultFeaturedImage}
+              alt={`Featured image for "${post.title}"`}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+              fallbackSrc={fallbackFeaturedImage}
+              quality={85}
+              aspectRatio="landscape"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             
+            {/* Category Badge */}
+            {showCategory && (
+              <div className="absolute top-4 left-4">
+                <span 
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border backdrop-blur-sm"
+                  style={{ 
+                    backgroundColor: `${post.category.color}20`,
+                    borderColor: post.category.color,
+                    color: post.category.color
+                  }}
+                >
+                  {post.category.name}
+                </span>
+              </div>
+            )}
+
             {/* Featured Badge */}
-            <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-              <span className="inline-flex items-center rounded-full bg-accent-green px-2.5 py-1 sm:px-3 sm:py-1 text-xs font-medium text-black">
+            <div className="absolute top-4 right-4">
+              <span className="inline-flex items-center px-2 py-1 rounded-full bg-accent-green/20 border border-accent-green text-accent-green text-xs font-medium backdrop-blur-sm">
                 Featured
               </span>
             </div>
           </div>
 
-          {/* Content Section - Mobile Optimized */}
-          <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-12">
-            {showCategory && (
-              <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                <span 
-                  className="text-xs font-medium tracking-wide uppercase"
-                  style={{ color: post.category.color }}
-                >
-                  {post.category.name}
-                </span>
-                <span className="text-xs font-medium tracking-wide text-white/50 uppercase">
-                  Featured Article
-                </span>
-              </div>
-            )}
-
-            <h3 className="mb-3 sm:mb-4 text-xl sm:text-2xl lg:text-3xl leading-tight font-medium group-hover:text-accent-green transition-colors duration-300">
+          {/* Content Section */}
+          <div className="flex flex-col justify-center p-8 lg:p-12">
+            <h3 className="text-2xl lg:text-3xl font-medium leading-tight mb-4 group-hover:text-accent-green transition-colors duration-300">
               {post.title}
             </h3>
 
-            <p className="mb-4 sm:mb-6 leading-relaxed text-white/70 text-base sm:text-lg line-clamp-3 sm:line-clamp-none">
-              {post.excerpt}
+            <p className="text-white/70 leading-relaxed mb-6 line-clamp-3">
+              {getContentPreview(post.excerpt, 200)}
             </p>
 
-            {/* Meta Information - Mobile Optimized */}
-            <div className="mb-4 sm:mb-6 flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-white/50">
-              <div className="flex items-center gap-1">
-                <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">{formatDate(post.publishedAt)}</span>
-                <span className="sm:hidden">{new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                {post.readTime}
-              </div>
+            <div className="flex items-center gap-4 text-sm text-white/50 mb-6">
+              <time className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                {formatDate(post.publishedAt)}
+              </time>
+              <span>{post.readTime}</span>
               {showAuthor && (
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={post.author.avatar}
-                    alt={post.author.name}
-                    width={16}
-                    height={16}
-                    className="rounded-full sm:w-5 sm:h-5"
-                  />
-                  <span className="hidden sm:inline">{post.author.name}</span>
-                  <span className="sm:hidden text-xs">{post.author.name.split(' ')[0]}</span>
-                </div>
+                <AuthorAvatar 
+                  author={post.author} 
+                  size="sm" 
+                  showName 
+                  className="flex items-center gap-2"
+                />
               )}
             </div>
 
             <Link href={`/blog/${post.slug}`}>
-              <Button className="group w-full sm:w-auto justify-center sm:justify-start">
-                Read Full Article
+              <Button variant="outline" className="group w-fit">
+                Read Article
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
@@ -122,8 +166,8 @@ export default function BlogPostCard({
   if (variant === 'minimal') {
     return (
       <Link href={`/blog/${post.slug}`} className={cn('group block', className)}>
-        <article className="space-y-2 sm:space-y-3">
-          <div className="flex items-center gap-2 sm:gap-4 text-sm text-white/50">
+        <article className="space-y-3 p-4 rounded-xl hover:bg-white/5 transition-all duration-300 border border-transparent hover:border-white/10">
+          <div className="flex items-center gap-4 text-sm text-white/50">
             {showCategory && (
               <span 
                 className="text-xs font-medium uppercase tracking-wide"
@@ -132,53 +176,60 @@ export default function BlogPostCard({
                 {post.category.name}
               </span>
             )}
-            <time className="text-xs sm:text-sm">
-              <span className="hidden sm:inline">{formatDate(post.publishedAt)}</span>
-              <span className="sm:hidden">{new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-            </time>
-            <span className="text-xs sm:text-sm">{post.readTime}</span>
+            <time>{formatDate(post.publishedAt)}</time>
+            <span>{post.readTime}</span>
           </div>
           
-          <h3 className="text-base sm:text-lg font-medium leading-tight group-hover:text-accent-green transition-colors duration-200 line-clamp-2 sm:line-clamp-none">
+          <h3 className="text-lg font-medium leading-tight group-hover:text-accent-green transition-colors duration-300">
             {post.title}
           </h3>
           
-          <p className="text-white/70 text-sm leading-relaxed line-clamp-2 sm:line-clamp-3">
-            {post.excerpt}
+          <p className="text-white/70 text-sm leading-relaxed line-clamp-2">
+            {getContentPreview(post.excerpt, 100)}
           </p>
+
+          {showAuthor && (
+            <div className="pt-2">
+              <AuthorAvatar 
+                author={post.author} 
+                size="sm" 
+                showName 
+                className="flex items-center gap-2"
+              />
+            </div>
+          )}
         </article>
       </Link>
     );
   }
 
-  // Default variant - Mobile Optimized
+  // Default variant with enhanced images and accessibility
   return (
     <Card className={cn(
-      'group overflow-hidden h-full flex flex-col bg-gradient-to-br from-white/8 via-white/4 to-white/2 backdrop-blur-sm border-white/10 transition-all duration-500',
-      'hover:border-accent-green/30 hover:from-white/12 hover:via-white/6 hover:to-white/3',
+      'group overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20',
       className
     )}>
-      {/* Image Section - Mobile Optimized */}
-      <div className="relative h-48 sm:h-52 overflow-hidden">
-        <Image
-          src={post.featuredImage}
-          alt={post.title}
+      {/* Enhanced Featured Image Section */}
+      <div className="relative h-48 overflow-hidden">
+        <ImageWithFallback
+          src={post.featuredImage || defaultFeaturedImage}
+          alt={`Cover image for "${post.title}"`}
           fill
-          className="object-cover transition-all duration-700 group-hover:scale-110"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          fallbackSrc={fallbackFeaturedImage}
+          quality={80}
+          aspectRatio="landscape"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
-        
-        {/* Category Badge - Mobile Optimized */}
+        {/* Category Badge */}
         {showCategory && (
-          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
+          <div className="absolute top-3 left-3">
             <span 
-              className="inline-flex items-center rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-medium text-white backdrop-blur-md border"
+              className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium text-white backdrop-blur-sm border border-white/20"
               style={{ 
-                backgroundColor: `${post.category.color}20`,
-                borderColor: post.category.color,
+                backgroundColor: `${post.category.color}30`,
                 color: post.category.color
               }}
             >
@@ -187,63 +238,61 @@ export default function BlogPostCard({
           </div>
         )}
 
-        {/* Reading Time Badge - Mobile Optimized */}
-        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10">
-          <span className="inline-flex items-center rounded-full bg-black/40 backdrop-blur-md border border-white/20 px-2 py-1 sm:px-2.5 text-xs font-medium text-white">
+        {/* Reading Time */}
+        <div className="absolute top-3 right-3">
+          <span className="inline-flex items-center rounded-full bg-black/40 backdrop-blur-sm px-2 py-1 text-xs font-medium text-white">
             <Clock className="h-3 w-3 mr-1" />
             {post.readTime}
           </span>
         </div>
+
+        {/* Featured indicator */}
+        {post.isFeatured && (
+          <div className="absolute bottom-3 left-3">
+            <span className="inline-flex items-center rounded-full bg-accent-green/20 border border-accent-green text-accent-green px-2 py-1 text-xs font-medium backdrop-blur-sm">
+              Featured
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Card Content - Mobile Optimized */}
-      <CardHeader className="flex-grow p-4 sm:p-6">
-        <div className="mb-2 sm:mb-3 flex items-center justify-between">
-          <time className="text-xs text-white/50 font-medium">
-            <span className="hidden sm:inline">{formatDate(post.publishedAt)}</span>
-            <span className="sm:hidden">{new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' })}</span>
+      {/* Content */}
+      <CardHeader className="flex-grow p-6">
+        <div className="mb-3">
+          <time className="text-xs text-white/50">
+            {formatDate(post.publishedAt)}
           </time>
         </div>
         
-        <CardTitle className="group-hover:text-accent-green transition-all duration-300 line-clamp-2 text-lg sm:text-xl leading-tight mb-2 sm:mb-3">
+        <CardTitle className="group-hover:text-accent-green transition-colors duration-300 line-clamp-2 text-lg leading-tight mb-3">
           {post.title}
         </CardTitle>
         
-        <CardDescription className="line-clamp-2 sm:line-clamp-3 text-white/70 leading-relaxed text-sm sm:text-base">
-          {post.excerpt}
+        <CardDescription className="line-clamp-2 text-white/70 leading-relaxed text-sm">
+          {getContentPreview(post.excerpt, 120)}
         </CardDescription>
       </CardHeader>
 
-      {/* Card Footer - Mobile Optimized */}
-      <CardContent className="p-4 sm:p-6 pt-0 mt-auto">
+      {/* Enhanced Footer with Author */}
+      <CardContent className="p-6 pt-0 mt-auto">
         <div className="flex items-center justify-between">
           {showAuthor && (
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-              <div className="relative flex-shrink-0">
-                <Image
-                  src={post.author.avatar}
-                  alt={post.author.name}
-                  width={28}
-                  height={28}
-                  className="rounded-full ring-2 ring-white/10 group-hover:ring-accent-green/30 transition-all duration-300 sm:w-8 sm:h-8"
-                />
-              </div>
-              <div className="flex flex-col min-w-0 flex-1">
-                <span className="text-xs sm:text-sm font-medium text-white/90 truncate">{post.author.name}</span>
-                <span className="text-xs text-white/50 truncate">{post.author.role}</span>
-              </div>
-            </div>
+            <AuthorAvatar 
+              author={post.author} 
+              size="md" 
+              showName 
+              className="flex items-center gap-3 flex-1 mr-4"
+            />
           )}
           
-          <Link href={`/blog/${post.slug}`} className="flex-shrink-0 ml-3">
+          <Link href={`/blog/${post.slug}`}>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="group/btn text-accent-green hover:text-black hover:bg-accent-green transition-all duration-300 border border-accent-green/30 hover:border-accent-green px-3 py-2 sm:px-4"
+              className="text-accent-green hover:bg-accent-green hover:text-black transition-all duration-200"
             >
-              <span className="hidden sm:inline">Read More</span>
-              <span className="sm:hidden">Read</span>
-              <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+              Read
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </div>

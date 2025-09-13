@@ -5,7 +5,7 @@ import { BlogPost, BlogCategory } from '@/types/blog';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Search, Filter, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, getContentPreview } from '@/lib/utils';
 
 interface BlogFiltersProps {
   posts: BlogPost[];
@@ -35,8 +35,8 @@ export default function BlogFilters({
       const lowercaseQuery = query.toLowerCase();
       filtered = filtered.filter(post => 
         post.title.toLowerCase().includes(lowercaseQuery) ||
-        post.excerpt.toLowerCase().includes(lowercaseQuery) ||
-        post.content.toLowerCase().includes(lowercaseQuery) ||
+        getContentPreview(post.excerpt, 500).toLowerCase().includes(lowercaseQuery) ||
+        getContentPreview(post.content, 1000).toLowerCase().includes(lowercaseQuery) ||
         post.author.name.toLowerCase().includes(lowercaseQuery)
       );
     }

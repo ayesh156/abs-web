@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyIdToken, isAdminUser, updateUserLastLogin, createUserDocument } from '@/lib/auth-admin';
+import { isAuthBypassEnabled, createMockAdminUser } from '@/lib/auth-bypass';
 
 // Rate limiting helper (simple in-memory store)
 const rateLimitMap = new Map<string, { count: number; lastAttempt: number }>();
@@ -26,6 +27,44 @@ function checkRateLimit(identifier: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check for bypass mode first
+    if (isAuthBypassEnabled()) {
+      console.warn('AUTH BYPASS: Token verification in bypass mode');
+      
+      const mockUser = createMockAdminUser();
+      
+      const response = NextResponse.json({
+        success: true,
+        user: {
+          uid: mockUser.uid,
+          email: mockUser.email,
+          emailVerified: mockUser.emailVerified,
+          isAdmin: mockUser.isAdmin,
+          name: mockUser.name,
+          role: mockUser.role,
+          bypassMode: true
+        },
+      });
+
+      // Set bypass cookies for consistency
+      response.cookies.set('bypass-auth', 'true', {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60,
+        path: '/',
+      });
+
+      response.cookies.set('admin-auth', 'true', {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60,
+        path: '/',
+      });
+
+      return response;
+    }
+
+    // Normal authentication flow
     // Get client IP for rate limiting
     const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0] || 
                      request.headers.get('x-real-ip') || 

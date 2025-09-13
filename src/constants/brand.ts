@@ -180,14 +180,14 @@ export const SERVICES = {
       description:
         'Modern, performant web applications built with precision and purpose.',
       technologies: ['Next.js', 'React', 'TypeScript', 'Node.js'],
-      icon: '🌐',
+      icon: 'Web',
     },
     {
       id: 'mobile',
       title: 'Mobile Experience Design',
       description: 'Native and cross-platform mobile apps that users love.',
       technologies: ['React Native', 'Swift', 'Kotlin', 'Flutter'],
-      icon: '📱',
+      icon: 'Mobile',
     },
     {
       id: 'ai',
@@ -203,7 +203,7 @@ export const SERVICES = {
       description:
         'Strategic guidance for digital transformation and technical architecture.',
       technologies: ['Architecture', 'Strategy', 'Planning', 'Optimization'],
-      icon: '💡',
+      icon: 'Ideas',
     },
   ],
 } as const;

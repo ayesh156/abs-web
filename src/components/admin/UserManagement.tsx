@@ -148,7 +148,7 @@ function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps) {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-lg bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-lg bg-black-rich border border-white/20 rounded-2xl shadow-2xl overflow-hidden"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-accent-green to-accent-green/80 p-6">
@@ -172,16 +172,16 @@ function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-black-rich">
           {/* Success State */}
           {success && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3"
+              className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-center gap-3"
             >
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <span className="text-green-800 font-medium">User added successfully!</span>
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span className="text-green-400 font-medium">User added successfully!</span>
             </motion.div>
           )}
 
@@ -190,26 +190,26 @@ function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps) {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3"
+              className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3"
             >
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <span className="text-red-800">{error}</span>
+              <AlertTriangle className="w-5 h-5 text-red-400" />
+              <span className="text-red-400">{error}</span>
             </motion.div>
           )}
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-sm font-medium text-white/90">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent-green/20 focus:border-accent-green focus:bg-white transition-all text-gray-900"
+                className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:ring-2 focus:ring-accent-green/20 focus:border-accent-green/50 focus:bg-white/10 transition-all text-white placeholder-white/40"
                 placeholder="user@absterco.com"
               />
             </div>
@@ -217,16 +217,16 @@ function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps) {
 
           {/* Name Field */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-sm font-medium text-white/90">
               Full Name
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent-green/20 focus:border-accent-green focus:bg-white transition-all text-gray-900"
+                className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:ring-2 focus:ring-accent-green/20 focus:border-accent-green/50 focus:bg-white/10 transition-all text-white placeholder-white/40"
                 placeholder="John Doe"
               />
             </div>
@@ -234,7 +234,7 @@ function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps) {
 
           {/* Role Selection */}
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-sm font-medium text-white/90">
               User Role
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -243,15 +243,15 @@ function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps) {
                 onClick={() => setFormData(prev => ({ ...prev, role: 'user' }))}
                 className={`p-4 border-2 rounded-xl transition-all ${
                   formData.role === 'user'
-                    ? 'border-accent-green bg-accent-green/5 text-accent-green'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-900'
+                    ? 'border-accent-green bg-accent-green/10 text-accent-green'
+                    : 'border-white/20 hover:border-white/30 text-white/70 hover:text-white bg-white/5 hover:bg-white/10'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5" />
                   <div className="text-left">
                     <div className="font-medium">User</div>
-                    <div className="text-xs text-gray-500">Standard access</div>
+                    <div className="text-xs text-white/40">Standard access</div>
                   </div>
                 </div>
               </button>
@@ -261,15 +261,15 @@ function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps) {
                 onClick={() => setFormData(prev => ({ ...prev, role: 'admin' }))}
                 className={`p-4 border-2 rounded-xl transition-all ${
                   formData.role === 'admin'
-                    ? 'border-accent-green bg-accent-green/5 text-accent-green'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-900'
+                    ? 'border-accent-green bg-accent-green/10 text-accent-green'
+                    : 'border-white/20 hover:border-white/30 text-white/70 hover:text-white bg-white/5 hover:bg-white/10'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <Crown className="w-5 h-5" />
                   <div className="text-left">
                     <div className="font-medium">Admin</div>
-                    <div className="text-xs text-gray-500">Full access</div>
+                    <div className="text-xs text-white/40">Full access</div>
                   </div>
                 </div>
               </button>
@@ -277,25 +277,25 @@ function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps) {
           </div>
 
           {/* Create Account Option */}
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+          <div className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/10">
             <input
               type="checkbox"
               id="createAccount"
               checked={formData.createAccount}
               onChange={(e) => setFormData(prev => ({ ...prev, createAccount: e.target.checked }))}
-              className="w-4 h-4 text-accent-green border-gray-300 rounded focus:ring-accent-green/20"
+              className="w-4 h-4 text-accent-green border-white/30 bg-white/5 rounded focus:ring-accent-green/20 focus:ring-2"
             />
-            <label htmlFor="createAccount" className="text-sm text-gray-900 font-medium">
+            <label htmlFor="createAccount" className="text-sm text-white/90 font-medium">
               Create new account if user doesn't exist
             </label>
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-gray-100">
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
               onClick={() => { onClose(); resetForm(); }}
-              className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all font-medium"
+              className="flex-1 px-4 py-3 border border-white/20 text-white/70 bg-white/5 rounded-xl hover:bg-white/10 hover:text-white transition-all font-medium"
             >
               Cancel
             </button>
@@ -421,7 +421,7 @@ function RoleChangeModal({ isOpen, onClose, user, onRoleChanged }: RoleChangeMod
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-md bg-black-rich border border-white/20 rounded-2xl shadow-2xl overflow-hidden"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
@@ -443,9 +443,9 @@ function RoleChangeModal({ isOpen, onClose, user, onRoleChanged }: RoleChangeMod
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6 bg-white">
+        <div className="p-6 space-y-6 bg-black-rich">
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-sm font-medium text-white/90">
               Select New Role
             </label>
             <div className="space-y-3">
@@ -453,15 +453,15 @@ function RoleChangeModal({ isOpen, onClose, user, onRoleChanged }: RoleChangeMod
                 onClick={() => setNewRole('user')}
                 className={`w-full p-4 border-2 rounded-xl transition-all ${
                   newRole === 'user'
-                    ? 'border-accent-green bg-accent-green/5 text-accent-green'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-900'
+                    ? 'border-accent-green bg-accent-green/10 text-accent-green'
+                    : 'border-white/20 hover:border-white/30 text-white/70 hover:text-white bg-white/5 hover:bg-white/10'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <User className={`w-5 h-5 ${newRole === 'user' ? 'text-accent-green' : 'text-gray-600'}`} />
+                  <User className={`w-5 h-5 ${newRole === 'user' ? 'text-accent-green' : 'text-white/60'}`} />
                   <div className="text-left">
                     <div className="font-medium">User</div>
-                    <div className="text-xs text-gray-500">Standard access to user features</div>
+                    <div className="text-xs text-white/40">Standard access to user features</div>
                   </div>
                 </div>
               </button>
@@ -470,15 +470,15 @@ function RoleChangeModal({ isOpen, onClose, user, onRoleChanged }: RoleChangeMod
                 onClick={() => setNewRole('admin')}
                 className={`w-full p-4 border-2 rounded-xl transition-all ${
                   newRole === 'admin'
-                    ? 'border-accent-green bg-accent-green/5 text-accent-green'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-900'
+                    ? 'border-accent-green bg-accent-green/10 text-accent-green'
+                    : 'border-white/20 hover:border-white/30 text-white/70 hover:text-white bg-white/5 hover:bg-white/10'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <Crown className={`w-5 h-5 ${newRole === 'admin' ? 'text-accent-green' : 'text-amber-500'}`} />
                   <div className="text-left">
                     <div className="font-medium">Admin</div>
-                    <div className="text-xs text-gray-500">Full access to all features</div>
+                    <div className="text-xs text-white/40">Full access to all features</div>
                   </div>
                 </div>
               </button>
@@ -490,10 +490,10 @@ function RoleChangeModal({ isOpen, onClose, user, onRoleChanged }: RoleChangeMod
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3"
+              className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-center gap-3"
             >
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <span className="text-green-800 font-medium">Role updated successfully!</span>
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span className="text-green-400 font-medium">Role updated successfully!</span>
             </motion.div>
           )}
 
@@ -502,20 +502,20 @@ function RoleChangeModal({ isOpen, onClose, user, onRoleChanged }: RoleChangeMod
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3"
+              className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3"
             >
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <span className="text-red-800">{error}</span>
+              <AlertTriangle className="w-5 h-5 text-red-400" />
+              <span className="text-red-400">{error}</span>
             </motion.div>
           )}
 
           {isChangingRole && !error && !success && (
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5" />
                 <div>
-                  <p className="text-amber-800 font-medium text-sm">Role Change Warning</p>
-                  <p className="text-amber-700 text-sm mt-1">
+                  <p className="text-amber-400 font-medium text-sm">Role Change Warning</p>
+                  <p className="text-amber-300 text-sm mt-1">
                     This will {newRole === 'admin' ? 'grant' : 'revoke'} administrative privileges.
                     The user will need to sign out and back in for changes to take effect.
                   </p>
@@ -525,10 +525,10 @@ function RoleChangeModal({ isOpen, onClose, user, onRoleChanged }: RoleChangeMod
           )}
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-gray-100">
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all font-medium"
+              className="flex-1 px-4 py-3 border border-white/20 text-white/70 bg-white/5 rounded-xl hover:bg-white/10 hover:text-white transition-all font-medium"
             >
               Cancel
             </button>
@@ -659,7 +659,7 @@ function EditUserModal({ isOpen, onClose, user, onUserUpdated }: EditUserModalPr
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-md bg-black-rich border border-white/20 rounded-2xl shadow-2xl overflow-hidden"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-green-500 to-green-600 p-6">
@@ -681,16 +681,16 @@ function EditUserModal({ isOpen, onClose, user, onUserUpdated }: EditUserModalPr
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-black-rich">
           {/* Success State */}
           {success && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3"
+              className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-center gap-3"
             >
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <span className="text-green-800 font-medium">User updated successfully!</span>
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span className="text-green-400 font-medium">User updated successfully!</span>
             </motion.div>
           )}
 
@@ -699,46 +699,46 @@ function EditUserModal({ isOpen, onClose, user, onUserUpdated }: EditUserModalPr
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3"
+              className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3"
             >
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <span className="text-red-800">{error}</span>
+              <AlertTriangle className="w-5 h-5 text-red-400" />
+              <span className="text-red-400">{error}</span>
             </motion.div>
           )}
 
           {/* Name Field */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-sm font-medium text-white/90">
               Full Name
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:bg-white transition-all text-gray-900"
+              className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500/50 focus:bg-white/10 transition-all text-white placeholder-white/40"
               placeholder="Enter full name"
             />
           </div>
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-sm font-medium text-white/90">
               Email Address
             </label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:bg-white transition-all text-gray-900"
+              className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500/50 focus:bg-white/10 transition-all text-white placeholder-white/40"
               placeholder="Enter email address"
             />
           </div>
 
           {/* Status Toggle */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
             <div>
-              <p className="font-medium text-gray-900">Account Status</p>
-              <p className="text-sm text-gray-600">
+              <p className="font-medium text-white/90">Account Status</p>
+              <p className="text-sm text-white/60">
                 {formData.disabled ? 'Account is disabled' : 'Account is active'}
               </p>
             </div>
@@ -746,7 +746,7 @@ function EditUserModal({ isOpen, onClose, user, onUserUpdated }: EditUserModalPr
               type="button"
               onClick={() => setFormData(prev => ({ ...prev, disabled: !prev.disabled }))}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                formData.disabled ? 'bg-gray-300' : 'bg-green-500'
+                formData.disabled ? 'bg-white/20' : 'bg-green-500'
               }`}
             >
               <span
@@ -758,11 +758,11 @@ function EditUserModal({ isOpen, onClose, user, onUserUpdated }: EditUserModalPr
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-gray-100">
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all font-medium"
+              className="flex-1 px-4 py-3 border border-white/20 text-white/70 bg-white/5 rounded-xl hover:bg-white/10 hover:text-white transition-all font-medium"
             >
               Cancel
             </button>
@@ -868,7 +868,7 @@ function DeleteUserModal({ isOpen, onClose, user, onUserDeleted }: DeleteUserMod
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-md bg-black-rich border border-white/20 rounded-2xl shadow-2xl overflow-hidden"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-red-500 to-red-600 p-6">
@@ -890,14 +890,14 @@ function DeleteUserModal({ isOpen, onClose, user, onUserDeleted }: DeleteUserMod
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6 bg-white">
+        <div className="p-6 space-y-6 bg-black-rich">
           {/* Warning */}
-          <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+          <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
+              <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5" />
               <div>
-                <p className="text-red-800 font-medium text-sm">Permanent Action</p>
-                <p className="text-red-700 text-sm mt-1">
+                <p className="text-red-400 font-medium text-sm">Permanent Action</p>
+                <p className="text-red-300 text-sm mt-1">
                   This will permanently delete the user account and all associated data. 
                   This action cannot be undone.
                 </p>
@@ -907,11 +907,11 @@ function DeleteUserModal({ isOpen, onClose, user, onUserDeleted }: DeleteUserMod
 
           {/* User Info */}
           <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-900">User to delete:</p>
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="font-medium text-gray-900">{user.name}</p>
-              <p className="text-sm text-gray-600">{user.email}</p>
-              <p className="text-xs text-gray-500">
+            <p className="text-sm font-medium text-white/90">User to delete:</p>
+            <div className="p-3 bg-white/5 rounded-lg border border-white/10">
+              <p className="font-medium text-white/90">{user.name}</p>
+              <p className="text-sm text-white/60">{user.email}</p>
+              <p className="text-xs text-white/40">
                 Role: {user.role} • Status: {user.status}
               </p>
             </div>
@@ -919,14 +919,14 @@ function DeleteUserModal({ isOpen, onClose, user, onUserDeleted }: DeleteUserMod
 
           {/* Confirmation */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-900">
-              Type <span className="font-mono bg-gray-100 px-1 rounded">DELETE</span> to confirm:
+            <label className="block text-sm font-medium text-white/90">
+              Type <span className="font-mono bg-white/10 px-1 rounded text-red-400">DELETE</span> to confirm:
             </label>
             <input
               type="text"
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 focus:bg-white transition-all text-gray-900"
+              className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 focus:bg-white/10 transition-all text-white placeholder-white/40"
               placeholder="Type DELETE"
             />
           </div>
@@ -936,18 +936,18 @@ function DeleteUserModal({ isOpen, onClose, user, onUserDeleted }: DeleteUserMod
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3"
+              className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3"
             >
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <span className="text-red-800">{error}</span>
+              <AlertTriangle className="w-5 h-5 text-red-400" />
+              <span className="text-red-400">{error}</span>
             </motion.div>
           )}
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-gray-100">
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all font-medium"
+              className="flex-1 px-4 py-3 border border-white/20 text-white/70 bg-white/5 rounded-xl hover:bg-white/10 hover:text-white transition-all font-medium"
             >
               Cancel
             </button>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { ArrowRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { cn, getContentPreview } from '@/lib/utils';
 
 interface BlogPostCardProps {
   post: BlogPost;
@@ -73,7 +73,7 @@ export default function BlogPostCard({
             </h3>
 
             <p className="text-white/70 leading-relaxed mb-6 line-clamp-3">
-              {post.excerpt}
+              {getContentPreview(post.excerpt, 200)}
             </p>
 
             <div className="flex items-center gap-4 text-sm text-white/50 mb-6">
@@ -130,7 +130,7 @@ export default function BlogPostCard({
           </h3>
           
           <p className="text-white/70 text-sm leading-relaxed line-clamp-2">
-            {post.excerpt}
+            {getContentPreview(post.excerpt, 100)}
           </p>
         </article>
       </Link>
@@ -191,7 +191,7 @@ export default function BlogPostCard({
         </CardTitle>
         
         <CardDescription className="line-clamp-2 text-white/70 leading-relaxed text-sm">
-          {post.excerpt}
+          {getContentPreview(post.excerpt, 120)}
         </CardDescription>
       </CardHeader>
 

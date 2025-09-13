@@ -3,13 +3,14 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, Lock, User, Shield, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, Lock, User, Shield, AlertCircle, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { isAuthBypassEnabled } from '@/lib/auth-bypass';
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, user, loading, error, clearError } = useAuth();
+  const { signIn, user, loading, error, clearError, bypassMode, bypassWarning } = useAuth();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -18,9 +19,27 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Only redirect if already authenticated
+  // Check for bypass mode
+  const bypassEnabled = isAuthBypassEnabled();
+
+  // Handle bypass mode - automatically redirect to admin panel
   useEffect(() => {
-    if (user) {
+    if (bypassEnabled || bypassMode) {
+      const redirectUrl = searchParams.get('returnUrl') || '/admin';
+      console.log('Authentication bypass active - redirecting to admin panel');
+      
+      // Add a small delay for UX
+      const timeoutId = setTimeout(() => {
+        router.push(redirectUrl);
+      }, 1000);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [bypassEnabled, bypassMode, router, searchParams]);
+
+  // Only redirect if already authenticated (normal flow)
+  useEffect(() => {
+    if (user && !bypassEnabled && !bypassMode) {
       const redirectUrl = searchParams.get('returnUrl') || 
                          sessionStorage.getItem('redirectAfterLogin') || 
                          '/admin';
@@ -37,7 +56,7 @@ function LoginForm() {
       
       return () => clearTimeout(timeoutId);
     }
-  }, [user, router, searchParams]);
+  }, [user, router, searchParams, bypassEnabled, bypassMode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +80,61 @@ function LoginForm() {
   };
 
   const isLoading = loading || isSubmitting;
+
+  // If bypass mode is enabled, show bypass message instead of login form
+  if (bypassEnabled || bypassMode) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="space-y-6 text-center"
+      >
+        {/* Bypass Warning */}
+        {bypassWarning && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex items-center gap-3 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400"
+          >
+            <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+            <div className="text-left">
+              <p className="font-semibold">{bypassWarning.title}</p>
+              <p className="text-sm text-amber-400/80">{bypassWarning.message}</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Bypass Status */}
+        <div className="space-y-4">
+          <div className="w-16 h-16 mx-auto bg-accent-green/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+            <Shield className="w-8 h-8 text-accent-green" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white mb-2">Authentication Bypassed</h3>
+            <p className="text-white/70 text-sm">Redirecting to admin panel...</p>
+          </div>
+          
+          {/* Loading spinner */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-6 h-6 mx-auto border-2 border-white/30 border-t-accent-green rounded-full"
+          />
+        </div>
+
+        {/* Manual redirect button */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => router.push('/admin')}
+          className="w-full bg-gradient-to-r from-accent-green to-accent-green/90 hover:from-accent-green/90 hover:to-accent-green text-black py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          Continue to Admin Panel
+        </motion.button>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.form
@@ -190,14 +264,14 @@ function LoginForm() {
           </p>
         </div>
         <div className="text-white/40 text-xs space-y-1">
-          <p>🔒 Firebase Authentication • Admin-only access</p>
-          <p>⚠️ If login fails, the admin user may not exist.</p>
-          <a 
-            href="/admin/setup" 
-            className="text-accent-green/80 hover:text-accent-green underline"
-          >
-            Set up admin user →
-          </a>
+          <p className="flex items-center gap-2">
+            <Lock className="w-3 h-3" />
+            Firebase Authentication • Admin-only access
+          </p>
+          <p className="flex items-center gap-2">
+            <AlertTriangle className="w-3 h-3" />
+            If login fails, contact your administrator.
+          </p>
         </div>
       </motion.div>
     </motion.form>

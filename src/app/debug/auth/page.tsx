@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { Shield, User, Settings, Key, HelpCircle, LogIn } from 'lucide-react';
 
 export default function AuthDebugPage() {
   const { user, loading } = useAuth();
@@ -42,11 +43,17 @@ export default function AuthDebugPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white shadow rounded-lg p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Authentication Debug Info</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Shield className="w-6 h-6" />
+            Authentication Debug Info
+          </h1>
           
           {/* Current Auth State */}
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Current Authentication State</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <User className="w-5 h-5" />
+              Current Authentication State
+            </h2>
             <div className="bg-gray-50 p-4 rounded-md">
               <pre className="text-sm text-gray-700">
                 {JSON.stringify({
@@ -65,7 +72,10 @@ export default function AuthDebugPage() {
 
           {/* Environment Variables */}
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Environment Variables</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <Settings className="w-5 h-5" />
+              Environment Variables
+            </h2>
             <div className="bg-gray-50 p-4 rounded-md">
               <pre className="text-sm text-gray-700">
                 {JSON.stringify(envVars, null, 2)}
@@ -75,7 +85,10 @@ export default function AuthDebugPage() {
 
           {/* Test Credentials */}
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Available Test Credentials</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <Key className="w-5 h-5" />
+              Available Test Credentials
+            </h2>
             <div className="space-y-4">
               {testCredentials.map((cred, index) => (
                 <div key={index} className="border border-gray-200 rounded-md p-4">
@@ -92,7 +105,10 @@ export default function AuthDebugPage() {
 
           {/* Troubleshooting Steps */}
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Troubleshooting Steps</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <HelpCircle className="w-5 h-5" />
+              Troubleshooting Steps
+            </h2>
             <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
               <li>Check if authentication mode is correctly detected (Firebase vs Mock)</li>
               <li>For Firebase mode: Ensure user exists in Firebase Console</li>
@@ -107,14 +123,16 @@ export default function AuthDebugPage() {
           <div className="space-y-3">
             <a 
               href="/admin/login" 
-              className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
             >
+              <LogIn className="w-4 h-4" />
               Go to Login Page
             </a>
             <a 
               href="/admin/setup" 
-              className="inline-block bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 ml-3"
+              className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 ml-3"
             >
+              <Shield className="w-4 h-4" />
               Set Admin Claims
             </a>
           </div>

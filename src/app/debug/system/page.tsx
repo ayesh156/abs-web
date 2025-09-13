@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Settings, CheckCircle, XCircle, AlertTriangle, Loader2, RefreshCw } from 'lucide-react';
 
 export default function SystemDiagnosticsPage() {
   const [diagnostics, setDiagnostics] = useState<any>({});
@@ -99,8 +100,11 @@ export default function SystemDiagnosticsPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Running system diagnostics...</p>
+          <Loader2 className="animate-spin h-32 w-32 text-indigo-600 mx-auto" />
+          <p className="mt-4 text-gray-600 flex items-center justify-center gap-2">
+            <Settings className="w-4 h-4" />
+            Running system diagnostics...
+          </p>
         </div>
       </div>
     );
@@ -110,7 +114,10 @@ export default function SystemDiagnosticsPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white shadow rounded-lg p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">System Diagnostics</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Settings className="w-6 h-6" />
+            System Diagnostics
+          </h1>
           
           {/* Environment Variables */}
           <div className="mb-8">
@@ -185,7 +192,8 @@ export default function SystemDiagnosticsPage() {
 
           {/* Actions */}
           <div className="space-y-3">
-            <Button onClick={runDiagnostics} className="mr-3">
+            <Button onClick={runDiagnostics} className="mr-3 flex items-center gap-2">
+              <RefreshCw className="w-4 h-4" />
               Refresh Diagnostics
             </Button>
             <a 

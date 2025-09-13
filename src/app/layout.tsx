@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { AuthProvider } from '@/hooks/useAuth';
 import FloatingContactButton from '@/components/ui/FloatingContactButton';
 import Preloader from '@/components/ui/Preloader';
 import './globals.css';
@@ -60,11 +61,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
-        <Preloader>
-          {children}
-          <FloatingContactButton />
-        </Preloader>
+      <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
+        <AuthProvider>
+          <Preloader>
+            {children}
+            <FloatingContactButton />
+          </Preloader>
+        </AuthProvider>
       </body>
     </html>
   );

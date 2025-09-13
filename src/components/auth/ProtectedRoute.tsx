@@ -3,7 +3,8 @@
 import { useEffect, ReactNode, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
+import { isAuthBypassEnabled } from '@/lib/auth-bypass';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -18,13 +19,23 @@ export default function ProtectedRoute({
   fallbackUrl = '/admin/login',
   loadingComponent 
 }: ProtectedRouteProps) {
-  const { user, loading, isAdmin } = useAuth();
+  const { user, loading, isAdmin, bypassMode, bypassWarning } = useAuth();
   const router = useRouter();
   const [shouldRender, setShouldRender] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
 
+  // Check for bypass mode
+  const bypassEnabled = isAuthBypassEnabled();
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
+
+    // If bypass mode is enabled, always allow access
+    if (bypassEnabled || bypassMode) {
+      setShouldRender(true);
+      setRedirecting(false);
+      return;
+    }
 
     if (!loading) {
       if (!user) {
@@ -69,7 +80,7 @@ export default function ProtectedRoute({
         clearTimeout(timeoutId);
       }
     };
-  }, [user, loading, isAdmin, requireAdmin, fallbackUrl, router, redirecting]);
+  }, [user, loading, isAdmin, requireAdmin, fallbackUrl, router, redirecting, bypassEnabled, bypassMode]);
 
   // Show loading state
   if (loading) {
@@ -98,5 +109,25 @@ export default function ProtectedRoute({
   }
 
   // User is authenticated and authorized
-  return <>{children}</>;
+  return (
+    <>
+      {/* Show bypass warning if in bypass mode */}
+      {(bypassEnabled || bypassMode) && bypassWarning && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-amber-500/90 backdrop-blur-sm border-b border-amber-400 text-black">
+          <div className="container mx-auto px-4 py-2">
+            <div className="flex items-center justify-center gap-3 text-sm font-medium">
+              <AlertTriangle className="w-4 h-4" />
+              <span>{bypassWarning.title}</span>
+              <span className="hidden sm:inline">- {bypassWarning.message}</span>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Main content with top margin if warning is shown */}
+      <div className={(bypassEnabled || bypassMode) && bypassWarning ? 'pt-12' : ''}>
+        {children}
+      </div>
+    </>
+  );
 }

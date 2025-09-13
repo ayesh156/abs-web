@@ -1,8 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyIdToken, isAdminUser, getUserDocument } from '@/lib/auth-admin';
+import { isAuthBypassEnabled, hasBypassAuthCookie, createMockAdminUser } from '@/lib/auth-bypass';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check for bypass mode first
+    if (isAuthBypassEnabled()) {
+      console.warn('AUTH BYPASS: Status check in bypass mode');
+      
+      // Check if bypass cookie is set or force bypass
+      const hasBypassCookie = hasBypassAuthCookie(request.headers.get('cookie') || '');
+      
+      if (hasBypassCookie || true) { // Always true in bypass mode
+        const mockUser = createMockAdminUser();
+        
+        return NextResponse.json({
+          authenticated: true,
+          user: {
+            uid: mockUser.uid,
+            email: mockUser.email,
+            emailVerified: mockUser.emailVerified,
+            isAdmin: mockUser.isAdmin,
+            name: mockUser.name,
+            role: mockUser.role,
+            lastLogin: mockUser.metadata.lastSignInTime,
+            createdAt: mockUser.metadata.creationTime,
+            bypassMode: true
+          },
+        });
+      }
+    }
+
+    // Normal authentication flow
     // Only check for admin token since we only allow admin users
     const adminToken = request.cookies.get('admin-token')?.value;
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Database, Key, AlertTriangle, CheckCircle, XCircle, ExternalLink, LogIn, Settings } from 'lucide-react';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
@@ -21,9 +22,9 @@ export default function FirebaseDiagnosticPage() {
     // Test API key format
     const apiKey = firebaseConfig.apiKey;
     if (apiKey && apiKey.startsWith('AIza')) {
-      setApiKeyTest('✅ API Key format looks correct');
+      setApiKeyTest('API Key format looks correct');
     } else {
-      setApiKeyTest('❌ API Key format appears invalid');
+      setApiKeyTest('API Key format appears invalid');
     }
   }, []);
 
@@ -48,11 +49,17 @@ export default function FirebaseDiagnosticPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white shadow rounded-lg p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Firebase Configuration Diagnostic</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Database className="w-6 h-6" />
+            Firebase Configuration Diagnostic
+          </h1>
           
           {/* API Key Status */}
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">API Key Status</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <Key className="w-5 h-5" />
+              API Key Status
+            </h2>
             <div className="bg-gray-50 p-4 rounded-md">
               <p className="text-sm">{apiKeyTest}</p>
               <p className="text-xs text-gray-600 mt-2">API Key: {config?.apiKey?.substring(0, 20)}...</p>
@@ -61,7 +68,10 @@ export default function FirebaseDiagnosticPage() {
 
           {/* Full Firebase Config */}
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Firebase Client Configuration</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <Database className="w-5 h-5" />
+              Firebase Client Configuration
+            </h2>
             <div className="bg-gray-50 p-4 rounded-md">
               <pre className="text-xs text-gray-700 overflow-auto">
                 {JSON.stringify(config, null, 2)}
@@ -71,7 +81,10 @@ export default function FirebaseDiagnosticPage() {
 
           {/* Environment Variables */}
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Environment Variables (Client-side)</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <Settings className="w-5 h-5" />
+              Environment Variables (Client-side)
+            </h2>
             <div className="bg-gray-50 p-4 rounded-md space-y-2">
               <div className="text-sm">
                 <strong>NEXT_PUBLIC_FIREBASE_API_KEY:</strong> {process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.substring(0, 20)}...
@@ -87,7 +100,10 @@ export default function FirebaseDiagnosticPage() {
 
           {/* Common Issues */}
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Common Issues & Solutions</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5" />
+              Common Issues & Solutions
+            </h2>
             <div className="space-y-4">
               <div className="border border-yellow-200 bg-yellow-50 p-4 rounded-md">
                 <h3 className="font-medium text-yellow-800">API Key Restrictions</h3>
@@ -117,8 +133,9 @@ export default function FirebaseDiagnosticPage() {
           <div className="mb-8">
             <button
               onClick={testFirebaseConnection}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center gap-2"
             >
+              <Database className="w-4 h-4" />
               Test Firebase Connection
             </button>
           </div>
@@ -127,16 +144,18 @@ export default function FirebaseDiagnosticPage() {
           <div className="space-y-3">
             <a 
               href="/admin/login" 
-              className="inline-block bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+              className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
             >
+              <LogIn className="w-4 h-4" />
               Try Login Again
             </a>
             <a 
               href="https://console.firebase.google.com/project/absterco-web/settings/general" 
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 ml-3"
+              className="inline-flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 ml-3"
             >
+              <ExternalLink className="w-4 h-4" />
               Open Firebase Console
             </a>
           </div>

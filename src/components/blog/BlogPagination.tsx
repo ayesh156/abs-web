@@ -8,169 +8,120 @@ interface BlogPaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  className?: string;
+  maxVisiblePages?: number;
 }
 
 export default function BlogPagination({
   currentPage,
   totalPages,
   onPageChange,
-  className
+  maxVisiblePages = 5
 }: BlogPaginationProps) {
   if (totalPages <= 1) return null;
 
   const getVisiblePages = () => {
-    const delta = 2;
-    const range = [];
-    const rangeWithDots = [];
-
-    for (
-      let i = Math.max(2, currentPage - delta);
-      i <= Math.min(totalPages - 1, currentPage + delta);
-      i++
-    ) {
-      range.push(i);
-    }
-
-    if (currentPage - delta > 2) {
-      rangeWithDots.push(1, '...');
+    const pages: (number | string)[] = [];
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
     } else {
-      rangeWithDots.push(1);
+      const sidePages = Math.floor(maxVisiblePages / 2);
+      const startPage = Math.max(1, currentPage - sidePages);
+      const endPage = Math.min(totalPages, currentPage + sidePages);
+      
+      if (startPage > 1) {
+        pages.push(1);
+        if (startPage > 2) pages.push('...');
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) pages.push('...');
+        pages.push(totalPages);
+      }
     }
-
-    rangeWithDots.push(...range);
-
-    if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
-    } else if (totalPages > 1) {
-      rangeWithDots.push(totalPages);
-    }
-
-    return rangeWithDots;
+    
+    return pages;
   };
 
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="flex flex-col items-center space-y-6">
-      {/* Main pagination controls */}
-      <nav
-        role="navigation"
-        aria-label="Blog pagination"
+    <div className="flex items-center justify-center gap-2">
+      {/* Previous Button */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
         className={cn(
-          'flex items-center justify-center space-x-1 p-2 rounded-2xl bg-gradient-to-r from-white/5 via-white/8 to-white/5 backdrop-blur-md border border-white/10',
-          className
+          'h-10 w-10 p-0 border border-white/10',
+          currentPage === 1
+            ? 'opacity-50 cursor-not-allowed'
+            : 'hover:border-accent-green/50 hover:bg-white/5'
         )}
+        aria-label="Previous page"
       >
-        {/* Previous Button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={cn(
-            'h-10 px-4 flex items-center gap-2 transition-all duration-300',
-            'text-white/70 hover:text-white hover:bg-white/10',
-            'disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent',
-            currentPage === 1 ? 'invisible' : 'visible'
-          )}
-          aria-label="Go to previous page"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          <span className="hidden sm:inline font-medium">Previous</span>
-        </Button>
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
 
-        {/* Page Numbers */}
-        <div className="flex items-center space-x-1 mx-2">
-          {visiblePages.map((page, index) => {
-            if (page === '...') {
-              return (
-                <span
-                  key={`ellipsis-${index}`}
-                  className="flex h-10 w-10 items-center justify-center text-white/40"
-                  aria-hidden="true"
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </span>
-              );
-            }
-
-            const pageNumber = page as number;
-            const isCurrentPage = pageNumber === currentPage;
-
+      {/* Page Numbers */}
+      <div className="flex items-center gap-1">
+        {visiblePages.map((page, index) => {
+          if (page === '...') {
             return (
-              <Button
-                key={pageNumber}
-                variant={isCurrentPage ? 'primary' : 'ghost'}
-                size="sm"
-                onClick={() => onPageChange(pageNumber)}
-                className={cn(
-                  'h-10 w-10 p-0 text-sm font-medium transition-all duration-300',
-                  isCurrentPage
-                    ? 'bg-accent-green text-black hover:bg-accent-green/80 shadow-lg shadow-accent-green/20 scale-110'
-                    : 'text-white/70 hover:text-white hover:bg-white/10 hover:scale-105'
-                )}
-                aria-label={`Go to page ${pageNumber}`}
-                aria-current={isCurrentPage ? 'page' : undefined}
+              <div
+                key={`ellipsis-${index}`}
+                className="h-10 w-10 flex items-center justify-center text-white/40"
               >
-                {pageNumber}
-              </Button>
+                <MoreHorizontal className="h-4 w-4" />
+              </div>
             );
-          })}
-        </div>
+          }
 
-        {/* Next Button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={cn(
-            'h-10 px-4 flex items-center gap-2 transition-all duration-300',
-            'text-white/70 hover:text-white hover:bg-white/10',
-            'disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent',
-            currentPage === totalPages ? 'invisible' : 'visible'
-          )}
-          aria-label="Go to next page"
-        >
-          <span className="hidden sm:inline font-medium">Next</span>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </nav>
+          const pageNumber = page as number;
+          const isActive = pageNumber === currentPage;
 
-      {/* Page Info and Quick Navigation */}
-      <div className="flex items-center gap-8 text-sm text-white/50">
-        <div className="flex items-center gap-2">
-          <span>Page</span>
-          <span className="font-medium text-accent-green">{currentPage}</span>
-          <span>of</span>
-          <span className="font-medium text-white/70">{totalPages}</span>
-        </div>
-        
-        {totalPages > 10 && (
-          <div className="hidden md:flex items-center gap-2">
-            <span>Jump to:</span>
+          return (
             <Button
-              variant="ghost"
+              key={pageNumber}
+              variant={isActive ? "primary" : "ghost"}
               size="sm"
-              onClick={() => onPageChange(1)}
-              disabled={currentPage === 1}
-              className="h-8 px-3 text-xs text-white/60 hover:text-accent-green hover:bg-white/5"
+              onClick={() => onPageChange(pageNumber)}
+              className={cn(
+                'h-10 w-10 p-0 text-sm font-medium',
+                isActive
+                  ? 'bg-accent-green text-black hover:bg-accent-green/80'
+                  : 'border border-white/10 hover:border-accent-green/50 hover:bg-white/5'
+              )}
             >
-              First
+              {pageNumber}
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onPageChange(totalPages)}
-              disabled={currentPage === totalPages}
-              className="h-8 px-3 text-xs text-white/60 hover:text-accent-green hover:bg-white/5"
-            >
-              Last
-            </Button>
-          </div>
-        )}
+          );
+        })}
       </div>
+
+      {/* Next Button */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className={cn(
+          'h-10 w-10 p-0 border border-white/10',
+          currentPage === totalPages
+            ? 'opacity-50 cursor-not-allowed'
+            : 'hover:border-accent-green/50 hover:bg-white/5'
+        )}
+        aria-label="Next page"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
     </div>
   );
 }

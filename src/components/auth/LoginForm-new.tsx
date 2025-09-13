@@ -263,7 +263,10 @@ export default function LoginForm({ onSubmit, isLoading = false }: LoginFormProp
           className="text-center"
         >
           <p className="text-white/50 text-xs leading-relaxed">
-            🔒 Firebase Authentication • Admin-only access<br />
+            <span className="flex items-center gap-2">
+              <Lock className="w-3 h-3" />
+              Firebase Authentication • Admin-only access
+            </span>
             Protected by enterprise-grade security
           </p>
         </motion.div>

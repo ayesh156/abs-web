@@ -1,6 +1,6 @@
 'use client';
 
-import { Author } from '@/types/blog';
+import { BlogPost } from '@/types/blog';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { ExternalLink, Twitter, Linkedin, Github } from 'lucide-react';
@@ -9,9 +9,8 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 interface BlogAuthorProfileProps {
-  author: Author;
+  author: BlogPost['author'];
   variant?: 'default' | 'compact' | 'detailed';
-  showSocial?: boolean;
   showBio?: boolean;
   className?: string;
 }
@@ -19,23 +18,9 @@ interface BlogAuthorProfileProps {
 export default function BlogAuthorProfile({
   author,
   variant = 'default',
-  showSocial = true,
   showBio = true,
   className
 }: BlogAuthorProfileProps) {
-  const getSocialIcon = (platform: keyof Author['socialLinks']) => {
-    switch (platform) {
-      case 'twitter':
-        return <Twitter className="h-4 w-4" />;
-      case 'linkedin':
-        return <Linkedin className="h-4 w-4" />;
-      case 'github':
-        return <Github className="h-4 w-4" />;
-      default:
-        return <ExternalLink className="h-4 w-4" />;
-    }
-  };
-
   if (variant === 'compact') {
     return (
       <div className={cn('flex items-center gap-3', className)}>
@@ -49,6 +34,9 @@ export default function BlogAuthorProfile({
         <div>
           <h4 className="text-sm font-medium text-white">{author.name}</h4>
           <p className="text-xs text-white/60">{author.role}</p>
+          {author.position && (
+            <p className="text-xs text-white/40">{author.position}</p>
+          )}
         </div>
       </div>
     );
@@ -62,7 +50,7 @@ export default function BlogAuthorProfile({
             {/* Avatar */}
             <div className="flex-shrink-0">
               <Image
-                src={author.avatar}
+                src={author.authorImage || author.avatar}
                 alt={author.name}
                 width={80}
                 height={80}
@@ -75,34 +63,15 @@ export default function BlogAuthorProfile({
               <div>
                 <h3 className="text-lg font-medium text-white">{author.name}</h3>
                 <p className="text-sm text-accent-green font-medium">{author.role}</p>
+                {author.position && (
+                  <p className="text-sm text-white/60 mt-1">{author.position}</p>
+                )}
               </div>
 
-              {showBio && (
+              {showBio && author.bio && (
                 <p className="text-sm leading-relaxed text-white/70">
                   {author.bio}
                 </p>
-              )}
-
-              {/* Social Links */}
-              {showSocial && Object.keys(author.socialLinks).length > 0 && (
-                <div className="flex items-center gap-2">
-                  {Object.entries(author.socialLinks).map(([platform, url]) => {
-                    if (!url) return null;
-                    
-                    return (
-                      <Link key={platform} href={url} target="_blank" rel="noopener noreferrer">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 text-white/60 hover:text-white hover:bg-white/10"
-                          aria-label={`${author.name} on ${platform}`}
-                        >
-                          {getSocialIcon(platform as keyof Author['socialLinks'])}
-                        </Button>
-                      </Link>
-                    );
-                  })}
-                </div>
               )}
             </div>
           </div>
@@ -115,7 +84,7 @@ export default function BlogAuthorProfile({
   return (
     <div className={cn('flex items-start gap-4', className)}>
       <Image
-        src={author.avatar}
+        src={author.authorImage || author.avatar}
         alt={author.name}
         width={56}
         height={56}
@@ -126,34 +95,15 @@ export default function BlogAuthorProfile({
         <div>
           <h4 className="font-medium text-white">{author.name}</h4>
           <p className="text-sm text-accent-green">{author.role}</p>
+          {author.position && (
+            <p className="text-sm text-white/60">{author.position}</p>
+          )}
         </div>
 
-        {showBio && (
+        {showBio && author.bio && (
           <p className="text-sm leading-relaxed text-white/70 line-clamp-2">
             {author.bio}
           </p>
-        )}
-
-        {/* Social Links */}
-        {showSocial && Object.keys(author.socialLinks).length > 0 && (
-          <div className="flex items-center gap-1">
-            {Object.entries(author.socialLinks).map(([platform, url]) => {
-              if (!url) return null;
-              
-              return (
-                <Link key={platform} href={url} target="_blank" rel="noopener noreferrer">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 w-7 p-0 text-white/50 hover:text-white hover:bg-white/10"
-                    aria-label={`${author.name} on ${platform}`}
-                  >
-                    {getSocialIcon(platform as keyof Author['socialLinks'])}
-                  </Button>
-                </Link>
-              );
-            })}
-          </div>
         )}
       </div>
     </div>

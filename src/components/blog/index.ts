@@ -6,4 +6,4 @@ export { default as BlogNewsletter } from './BlogNewsletter';
 export { default as BlogAuthorProfile } from './BlogAuthorProfile';
 
 // Re-export types for convenience
-export type { BlogPost, Author, BlogCategory } from '@/types/blog';
+export type { BlogPost, BlogCategory } from '@/types/blog';

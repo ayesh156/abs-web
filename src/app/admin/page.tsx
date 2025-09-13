@@ -7,7 +7,6 @@ import DashboardStats from '@/components/admin/DashboardStats';
 import RecentActivity from '@/components/admin/RecentActivity';
 import QuickActions from '@/components/admin/QuickActions';
 import AnalyticsChart from '@/components/admin/AnalyticsChart';
-import AddAdminUser from '@/components/admin/AddAdminUser';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -27,7 +26,6 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <AddAdminUser />
               <QuickActions />
             </div>
           </div>
