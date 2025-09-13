@@ -4,7 +4,7 @@
 
 A premium Next.js website for Absterco, a globally distributed digital engineering agency specializing in refined software solutions.
 
-## 🎯 Brand Overview
+## Brand Overview
 
 Absterco represents the intersection of precision engineering and elegant design. Our globally distributed team combines American business acumen with Sri Lankan technical excellence to deliver borderless innovation.
 
@@ -14,7 +14,7 @@ Absterco represents the intersection of precision engineering and elegant design
 - **Collaboration:** Global teams, unified vision
 - **Excellence:** No compromise on quality
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - **Framework:** Next.js 15 with App Router
 - **Styling:** Tailwind CSS v4
@@ -45,7 +45,7 @@ src/
 └── lib/                  # Utilities
 ```
 
-## 🎨 Design System
+## Design System
 
 ### Colors
 
@@ -65,7 +65,7 @@ src/
 - **Cards:** Glass morphism with subtle borders and hover lifts
 - **Layout:** 12-column grid, responsive breakpoints
 
-## 🌍 Global Positioning
+## Global Positioning
 
 Absterco operates as a unified global brand with:
 
@@ -73,17 +73,17 @@ Absterco operates as a unified global brand with:
 - **Development Operations:** Absterco (Pvt) Ltd (Sri Lanka)
 - **Messaging:** "Borderless innovation meets local precision"
 
-## 📱 Features
+## Features
 
 ### Current Implementation
 
-- ✅ Responsive design with mobile-first approach
-- ✅ Modern Next.js 15 with App Router
-- ✅ Tailwind CSS v4 design system
-- ✅ TypeScript for type safety
-- ✅ SEO optimization with metadata
-- ✅ Accessibility compliance (WCAG 2.1 AA)
-- ✅ Performance optimization
+- Responsive design with mobile-first approach
+- Modern Next.js 15 with App Router
+- Tailwind CSS v4 design system
+- TypeScript for type safety
+- SEO optimization with metadata
+- Accessibility compliance (WCAG 2.1 AA)
+- Performance optimization
 
 ### Planned Features
 
@@ -94,7 +94,7 @@ Absterco operates as a unified global brand with:
 - 🔄 Project estimation calculator
 - 🔄 Booking system integration
 
-## 🚀 Getting Started
+## Getting Started
 
 1. **Install dependencies:**
 
@@ -122,7 +122,7 @@ Absterco operates as a unified global brand with:
    npm run type-check  # TypeScript validation
    ```
 
-## 📊 Performance Targets
+## Performance Targets
 
 - **Page Load:** < 2 seconds on 3G
 - **Core Web Vitals:** Green scores across all metrics
@@ -130,7 +130,7 @@ Absterco operates as a unified global brand with:
 - **Accessibility:** 95%+ audit score
 - **SEO:** Optimized metadata and structure
 
-## 🎯 Brand Guidelines
+## Brand Guidelines
 
 ### Voice & Tone
 
@@ -145,7 +145,7 @@ Absterco operates as a unified global brand with:
 - **Futuristic:** Sharp, modern aesthetic
 - **Intentional:** Every element has purpose
 
-## 📄 License
+## License
 
 © 2025 Absterco LLC. All rights reserved.
 
